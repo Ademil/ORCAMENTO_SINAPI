@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>APavan Orçamentos | SINAPI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f0f4f8;
+            color: #1a2c3e;
+            padding: 24px 20px;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+            background: white;
+            padding: 20px 28px;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03), 0 2px 4px rgba(0,0,0,0.05);
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0B3B5F, #1D7A8C);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+        .badge {
+            background: #e9ecef;
+            padding: 8px 16px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #2c5a6e;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 28px;
+        }
+
+        .search-panel {
+            flex: 1.2;
+            min-width: 280px;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            padding: 20px 24px;
+            height: fit-content;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 14px 18px;
+            font-size: 1rem;
+            border: 1px solid #cfdfe9;
+            border-radius: 48px;
+            background: white;
+            transition: 0.2s;
+            outline: none;
+        }
+        .search-box input:focus {
+            border-color: #1D7A8C;
+            box-shadow: 0 0 0 3px rgba(29,122,140,0.2);
+        }
+        .search-box button {
+            background: #1D7A8C;
+            border: none;
+            padding: 0 28px;
+            border-radius: 48px;
+            font-weight: 600;
+            color: white;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .search-box button:hover {
+            background: #0e5f6f;
+            transform: scale(0.97);
+        }
+
+        .results-title {
+            font-weight: 600;
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+            border-left: 5px solid #1D7A8C;
+            padding-left: 14px;
+        }
+
+        .results-list {
+            max-height: 580px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+        .result-card {
+            background: #f9fbfd;
+            border-radius: 20px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            transition: 0.1s;
+            border: 1px solid #e4edf2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .result-card:hover {
+            background: #ffffff;
+            border-color: #cbdde6;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+        .info {
+            flex: 3;
+        }
+        .codigo {
+            font-family: monospace;
+            font-weight: 700;
+            background: #eef2f7;
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+        }
+        .descricao {
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: #1f3b4a;
+        }
+        .detalhe {
+            font-size: 0.8rem;
+            color: #5b7c8e;
+        }
+        .preco {
+            font-weight: 700;
+            color: #1d7a8c;
+            font-size: 1rem;
+            background: #e3f0f3;
+            padding: 4px 12px;
+            border-radius: 40px;
+        }
+        .add-btn {
+            background: #0B3B5F;
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.8rem;
+        }
+        .add-btn:hover {
+            background: #1D7A8C;
+        }
+
+        .budget-panel {
+            flex: 1.8;
+            min-width: 500px;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            padding: 20px 24px;
+        }
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e9edf2;
+            padding-bottom: 12px;
+        }
+        .budget-header h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        .bdi-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            padding: 8px 18px;
+            border-radius: 60px;
+        }
+        .bdi-box label {
+            font-weight: 500;
+        }
+        .bdi-box input {
+            width: 85px;
+            padding: 8px;
+            border-radius: 40px;
+            border: 1px solid #cbdde6;
+            text-align: center;
+            font-weight: 600;
+        }
+        .export-btn {
+            background: #2c6e4f;
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 12px;
+        }
+        .export-btn:hover {
+            background: #1f5a40;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 28px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        th {
+            text-align: left;
+            padding: 14px 8px;
+            background: #f0f4f9;
+            color: #1f3b4a;
+        }
+        td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+        .qtd-input {
+            width: 70px;
+            padding: 6px;
+            border-radius: 20px;
+            border: 1px solid #bdd3e0;
+            text-align: center;
+        }
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #b91c1c;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        .total-area {
+            background: #f0f7fa;
+            padding: 18px 20px;
+            border-radius: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .total-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0B3B5F;
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 40px 0;
+            color: #8aa5b5;
+        }
+
+        @media (max-width: 860px) {
+            body { padding: 16px; }
+            .header { flex-direction: column; gap: 12px; }
+            .search-panel, .budget-panel { min-width: auto; }
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #eef2f5;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #b9cfdc;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📐 APavan Orçamentos tabela SINAPI</h1>
+        <div class="badge">SINAPI · 3.489 itens disponíveis</div>
+    </div>
+
+    <div class="dashboard">
+        <div class="search-panel">
+            <div class="search-box">
+                <input type="text" id="busca" placeholder="🔍 Buscar por descrição ou código... (ex: 00000123 ou concreto)">
+                <button onclick="buscar()">Buscar</button>
+            </div>
+            <div class="results-title">📦 Resultados</div>
+            <div id="resultados" class="results-list">
+                <div style="text-align:center; padding:30px; color:#6c8d9e;">Digite algo para buscar itens SINAPI</div>
+            </div>
+        </div>
+
+        <div class="budget-panel">
+            <div class="budget-header">
+                <h3>🧾 Orçamento atual</h3>
+                <div style="display: flex; gap: 10px;">
+                    <div class="bdi-box">
+                        <label>BDI (%)</label>
+                        <input type="number" id="bdi" value="0" step="0.5" onchange="calcularTotal()">
+                    </div>
+                    <button class="export-btn" onclick="exportarOrcamento()">📎 Exportar CSV</button>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table id="tabela-orcamento">
+                    <thead>
+                        <tr><th>Descrição</th><th>Unid.</th><th>Qtd</th><th>Preço</th><th>Total</th><th></th></tr>
+                    </thead>
+                    <tbody id="tabela"></tbody>
+                </table>
+            </div>
+            <div id="totalGeral" class="total-area">
+                <span>💰 VALOR FINAL (com BDI)</span>
+                <span class="total-value">R$ 0,00</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="banco.js"></script>
+<script>
+    let itensOrcamento = [];
+
+    function buscar() {
+        const termo = document.getElementById('busca').value.toLowerCase().trim();
+        const resultadosDiv = document.getElementById('resultados');
+        if (!termo) {
+            resultadosDiv.innerHTML = '<div style="text-align:center; padding:30px; color:#6c8d9e;">Digite um termo para buscar</div>';
+            return;
+        }
+        if (typeof bibliotecaGlobal === 'undefined') {
+            resultadosDiv.innerHTML = '<div style="color:red;">⚠️ Banco de dados não carregado. Verifique banco.js</div>';
+            return;
+        }
+        const filtrados = bibliotecaGlobal.filter(item =>
+            item.descricao.toLowerCase().includes(termo) ||
+            item.codigo.includes(termo)
+        );
+        exibirResultados(filtrados);
+    }
+
+    function exibirResultados(itens) {
+        const ul = document.getElementById('resultados');
+        ul.innerHTML = '';
+        if (!itens.length) {
+            ul.innerHTML = '<div style="text-align:center; padding:30px;">Nenhum resultado encontrado 🔍</div>';
+            return;
+        }
+        itens.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.innerHTML = `
+                <div class="info">
+                    <div class="codigo">${item.codigo}</div>
+                    <div class="descricao">${item.descricao.substring(0, 100)}${item.descricao.length > 100 ? '…' : ''}</div>
+                    <div class="detalhe">Unidade: ${item.unidade}</div>
+                </div>
+                <div class="preco">R$ ${item.preco.toFixed(2)}</div>
+                <button class="add-btn" data-codigo="${item.codigo}">➕ Adicionar</button>
+            `;
+            const btn = card.querySelector('.add-btn');
+            btn.addEventListener('click', () => adicionar(item.codigo));
+            ul.appendChild(card);
+        });
+    }
+
+    function adicionar(codigo) {
+        const item = bibliotecaGlobal.find(i => i.codigo === codigo);
+        if (!item) return;
+        const existente = itensOrcamento.find(i => i.codigo === codigo);
+        if (existente) {
+            existente.quantidade++;
+        } else {
+            itensOrcamento.push({
+                codigo: item.codigo,
+                descricao: item.descricao,
+                preco: item.preco,
+                unidade: item.unidade,
+                quantidade: 1
+            });
+        }
+        atualizarTabela();
+    }
+
+    function atualizarTabela() {
+        const tbody = document.getElementById('tabela');
+        tbody.innerHTML = '';
+        if (itensOrcamento.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px;">Nenhum item adicionado 📦</td></tr>';
+            calcularTotal();
+            return;
+        }
+        itensOrcamento.forEach((item, idx) => {
+            const total = item.preco * item.quantidade;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="max-width:280px;">${item.descricao.substring(0, 70)}</td>
+                <td>${item.unidade}</td>
+                <td><input type="number" class="qtd-input" value="${item.quantidade}" min="1" onchange="alterarQuantidade(${idx}, this.value)"></td>
+                <td>R$ ${item.preco.toFixed(2)}</td>
+                <td class="total-item">R$ ${total.toFixed(2)}</td>
+                <td><button class="remove-btn" onclick="removerItem(${idx})">🗑️</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+        calcularTotal();
+    }
+
+    function alterarQuantidade(indice, novaQtd) {
+        if (novaQtd < 1) novaQtd = 1;
+        itensOrcamento[indice].quantidade = parseInt(novaQtd);
+        atualizarTabela();
+    }
+
+    function removerItem(indice) {
+        itensOrcamento.splice(indice, 1);
+        atualizarTabela();
+    }
+
+    function calcularTotal() {
+        let total = 0;
+        for (let item of itensOrcamento) {
+            total += item.preco * item.quantidade;
+        }
+        const bdi = parseFloat(document.getElementById('bdi').value) || 0;
+        total = total * (1 + bdi / 100);
+        const totalDiv = document.getElementById('totalGeral');
+        totalDiv.innerHTML = `<span>💰 VALOR FINAL (com BDI)</span>
+                              <span class="total-value">R$ ${total.toFixed(2)}</span>`;
+    }
+
+    function exportarOrcamento() {
+        if (itensOrcamento.length === 0) {
+            alert("Nenhum item no orçamento para exportar.");
+            return;
+        }
+        // Cabeçalho do CSV
+        let csvRows = [
+            ["Código", "Descrição", "Unidade", "Quantidade", "Preço Unitário", "Total"]
+        ];
+        let subtotal = 0;
+        for (let item of itensOrcamento) {
+            const totalItem = item.preco * item.quantidade;
+            subtotal += totalItem;
+            csvRows.push([
+                item.codigo,
+                item.descricao,
+                item.unidade,
+                item.quantidade,
+                item.preco.toFixed(2),
+                totalItem.toFixed(2)
+            ]);
+        }
+        const bdi = parseFloat(document.getElementById('bdi').value) || 0;
+        const totalComBdi = subtotal * (1 + bdi / 100);
+        csvRows.push([], ["Subtotal", "", "", "", "", subtotal.toFixed(2)]);
+        csvRows.push(["BDI", `${bdi}%`, "", "", "", ""]);
+        csvRows.push(["TOTAL GERAL", "", "", "", "", totalComBdi.toFixed(2)]);
+
+        const csvContent = csvRows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(";")).join("\n");
+        const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute("download", "orcamento_sinapi.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('busca').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') buscar();
+    });
+</script>
+</body>
+</html>
